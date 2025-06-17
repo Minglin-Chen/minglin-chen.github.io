@@ -138,3 +138,51 @@ name {
 span.highlight {
   background-color: #ffffd0;
 }
+
+/* 研究项目block的自适应间距 */
+.research-block {
+  margin-bottom: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.research-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.research-block .content-cell {
+  padding: 10px 5px;
+  vertical-align: top;
+}
+
+.research-block .image-cell {
+  padding: 10px 5px;
+  vertical-align: top;
+}
+
+/* 确保图片容器高度自适应 */
+.research-block .one {
+  min-height: 120px;
+  height: auto;
+}
+
+/* 文本内容的行间距 */
+.research-block p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.research-block strong {
+  line-height: 1.4;
+}
+
+/* 作者列表的间距 */
+.research-block br + a,
+.research-block br + strong {
+  margin-left: 2px;
+}
+
+.research-block a:first-of-type {
+  margin-left: 0;
+}
