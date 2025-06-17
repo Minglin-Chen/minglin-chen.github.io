@@ -139,7 +139,7 @@ span.highlight {
   background-color: #ffffd0;
 }
 
-/* 研究项目block的自适应间距 */
+/* Adaptive spacing for research project blocks */
 .research-block {
   margin-bottom: 20px;
   padding: 15px 0;
@@ -151,33 +151,50 @@ span.highlight {
   margin-bottom: 0;
 }
 
-.research-block .content-cell {
+/* Adaptive spacing for internship experience blocks */
+.experience-block {
+  margin-bottom: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.experience-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.research-block .content-cell,
+.experience-block .content-cell {
   padding: 10px 5px;
   vertical-align: top;
 }
 
-.research-block .image-cell {
+.research-block .image-cell,
+.experience-block .image-cell {
   padding: 10px 5px;
   vertical-align: top;
 }
 
-/* 确保图片容器高度自适应 */
-.research-block .one {
+/* Ensure image container height adapts to content */
+.research-block .one,
+.experience-block .one {
   min-height: 120px;
   height: auto;
 }
 
-/* 文本内容的行间距 */
-.research-block p {
+/* Text content line spacing */
+.research-block p,
+.experience-block p {
   margin: 8px 0;
   line-height: 1.5;
 }
 
-.research-block strong {
+.research-block strong,
+.experience-block strong {
   line-height: 1.4;
 }
 
-/* 作者列表的间距 */
+/* Author list spacing */
 .research-block br + a,
 .research-block br + strong {
   margin-left: 2px;
