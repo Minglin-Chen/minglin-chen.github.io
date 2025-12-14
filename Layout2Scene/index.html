@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>Layout2Scene</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+
+  <!-- Three.js for 3D model loading -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    .hero.is-large {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+    .hero.is-large::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('assets/images/teaser.jpg');
+        background-position: center top;
+        background-size: 100% 100%;
+        background-repeat: repeat-y;
+        background-attachment: fixed;
+        transform: translateY(-0%);
+        transition: filter 0.3s ease, transform 0.3s ease;
+        z-index: 1;
+        opacity: 0.6;
+    }
+    .hero.is-large::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100px;
+        background: linear-gradient(to top, rgba(255, 255, 255, 1) 60%, rgba(255, 255, 255, 0));
+        pointer-events: none;
+        z-index: 2;
+    }
+    .publication-title {
+        position: absolute;
+        top: -10vh;
+        transition: color 0.3s ease;
+        z-index: 1
+    }
+    .authors-block {
+        position: absolute;
+        top: 8vh;
+        left: 0vh;
+        right: 0vh;
+        bottom: 0vh;
+        transition: color 0.3s ease;
+        z-index: 1
+    }
+    .institutions-block {
+        position: absolute;
+        top: 12vh;
+        left: 0vh;
+        right: 0vh;
+        bottom: 0vh;
+        transition: color 0.3s ease;
+        z-index: 1
+    }
+    .links-block {
+        position: absolute;
+        top: 15vh;
+        left: 0vh;
+        right: 0vh;
+        bottom: 0vh;
+        transition: color 0.3s ease;
+        z-index: 1
+    }
+    .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 0;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .fixed-header.show {
+        transform: translateY(0);
+    }
+    .fixed-header {
+        font-size: 1.5rem !important;
+        margin: 0;
+        color: black;
+    }
+
+    /* 3D Model Viewer Styles */
+    .model-viewer-row {
+        display: flex;
+        gap: 30px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .model-viewer-container {
+        display: flex;
+        flex-direction: column;
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        min-width: 500px;
+        max-width: 600px;
+    }
+
+    .content-panels {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .model-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #glb-viewer-1, #glb-viewer-2, #glb-viewer-3, #glb-viewer-4, #glb-viewer-5, #glb-viewer-6, #glb-viewer-7, #glb-viewer-8, #glb-viewer-9, #glb-viewer-10, #glb-viewer-11, #glb-viewer-12 {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                    linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                    linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+    
+    .panel-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    .viewer-controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 0 5px 0;
+        border-top: 1px solid #e9ecef;
+        margin-top: auto;
+    }
+    
+    .viewer-controls button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #667eea;
+        color: white;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        flex: 1;
+        max-width: 140px;
+    }
+    
+    .viewer-controls button:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .viewer-controls button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .content-panels {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        #glb-viewer-1, #glb-viewer-2, #glb-viewer-3, #glb-viewer-4, #glb-viewer-5, #glb-viewer-6, #glb-viewer-7, #glb-viewer-8, #glb-viewer-9, #glb-viewer-10, #glb-viewer-11, #glb-viewer-12 {
+            aspect-ratio: 1 / 1;
+        }
+        
+        .viewer-controls {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .viewer-controls button {
+            flex: none;
+            min-width: 120px;
+        }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hero = document.querySelector('.hero.is-large');
+      
+      // 创建固定头部
+      const fixedHeader = document.createElement('div');
+      fixedHeader.className = 'fixed-header';
+      fixedHeader.innerHTML = `
+        <div class="container is-max-desktop">
+          <div class="has-text-centered">
+            <h1 style="position: static; top: auto; left: auto; right: auto; bottom: auto;">
+              <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: bold;">Layout👉Scene</span>
+              </div>
+            </h1>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(fixedHeader);
+      
+      window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const heroHeight = hero.offsetHeight;
+        const scrollPercent = Math.min(scrolled / heroHeight, 1);
+        
+        // 计算缩放和模糊效果，仅应用于背景图片
+        const scale = 1 + scrollPercent * 0.3; // 最大放大30%
+        const blur = scrollPercent * 25; // 最大模糊25px
+
+        // 加快标题颜色变化速度（原来是线性，现在在前30%就完成）
+        const fastAlpha = Math.min(scrollPercent * 2.5, 1); // 在30%滚动时就达到完全不透明
+        
+        // 应用效果到背景图片（::before伪元素）
+        const style = document.createElement('style');
+        style.textContent = `
+          .hero.is-large::before {
+            transform: translateY(-0%) scale(${scale}) !important;
+            filter: blur(${blur}px) !important;
+          }
+        `;
+        
+        // 移除之前的动态样式
+        const existingStyle = document.querySelector('#dynamic-hero-style');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+        
+        // 添加新的动态样式
+        style.id = 'dynamic-hero-style';
+        document.head.appendChild(style);
+        
+        // 控制固定头部显示
+        if (scrollPercent > 0.5) { // 当滚动超过60%时显示固定头部
+          fixedHeader.classList.add('show');
+        } else {
+          fixedHeader.classList.remove('show');
+        }
+      });
+    });
+  </script>
+
+  <!-- Interactive Demo Script -->
+  <script>
+    let timeoutIds = [];
+
+    function populateDemo(imgs, num) {
+      // Get the expanded image/video
+      var expandImg = document.getElementById("expandedImg-" + num);
+      // Get the image text
+      var imgText = document.getElementById("imgtext-" + num);
+      var answer = document.getElementById("answer-" + num);
+
+      // Convert image source to video source
+      expandImg.src = imgs.src.replace(".jpg", ".mp4").replace("images/", "videos/");
+      var video = document.getElementById('demo-video-' + num);
+      
+      if (video) {
+        video.pause();
+        video.load();
+        video.play();
+        video.removeAttribute('controls');
+      }
+
+      console.log(expandImg.src);
+      
+      // Parse the alt attribute
+      var qa = imgs.alt.split("[sep]");
+      imgText.innerHTML = qa[0];
+      answer.innerHTML = "";
+      
+      // Show the container element
+      if (expandImg.parentElement) {
+        expandImg.parentElement.style.display = "block";
+      }
+      
+      // Clear previous timeouts
+      for (let timeoutId of timeoutIds) {
+        clearTimeout(timeoutId);
+      }
+
+      // Simulate loading result text (you can replace with actual file reading)
+      var sampleResult = `# SceneGen Generation Results
+
+Input Scene: ${qa[0]}
+Processing Steps:
+1. Scene Analysis and Object Detection
+2. Mask Generation for Multiple Objects
+3. Feature Extraction using Visual and Geometric Encoders
+4. Global Attention Integration
+5. 3D Asset Generation with Spatial Positioning
+
+Generated Objects:
+- Chair: Position (1.2, 0.0, 0.8), Rotation (0°, 45°, 0°)
+- Table: Position (0.0, 0.0, 0.0), Rotation (0°, 0°, 0°)
+- Lamp: Position (-0.8, 1.5, 0.5), Rotation (0°, 0°, 0°)
+
+Geometric Accuracy: 94.2%
+Visual Quality Score: 8.7/10
+Processing Time: 2.3 seconds`;
+
+      typeWriter(sampleResult, 0, qa[0], num);
+    }
+
+    function typeWriter(txt, i, q, num) {
+      var imgText = document.getElementById("imgtext-" + num);
+      var answer = document.getElementById("answer-" + num);
+      
+      if (imgText && imgText.innerHTML == q) {
+        for (let k = 0; k < 3; k++) {
+          if (i < txt.length) {
+            if (txt.charAt(i) == "\\") {
+              answer.innerHTML += "\n";
+              i += 1;
+            } else {
+              answer.innerHTML += txt.charAt(i);
+            }
+            i++;
+          }
+        }
+        hljs.highlightAll();
+        timeoutIds.push(setTimeout(typeWriter, 20, txt, i, q, num));
+      }
+    }
+  </script>
+
+  <!-- 3D Model Viewer Script -->
+  <script>
+    //import { RGBELoader } from 'https://unpkg.com/three@0.158.0/examples/jsm/loaders/RGBELoader.js';
+
+    let scenes = {}, cameras = {}, renderers = {}, controls = {}, models = {};
+    let isViewerInitialized = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false };
+
+    function initGLBViewer(viewerId = 1) {
+        if (isViewerInitialized[viewerId]) return;
+        
+        const container = document.getElementById(`glb-viewer-${viewerId}`);
+        if (!container) return;
+        
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        // Scene setup
+        scenes[viewerId] = new THREE.Scene();
+        scenes[viewerId].background = new THREE.Color(0xf0f0f0);
+
+        // Camera setup
+        cameras[viewerId] = new THREE.PerspectiveCamera(70, width / height, 0.1, 1000);
+        cameras[viewerId].position.set(0.8, 0.8, 0.8);
+
+        // Renderer setup
+        renderers[viewerId] = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderers[viewerId].setSize(width, height);
+        renderers[viewerId].shadowMap.enabled = true;
+        renderers[viewerId].shadowMap.type = THREE.PCFSoftShadowMap;
+        renderers[viewerId].outputEncoding = THREE.sRGBEncoding;
+        renderers[viewerId].toneMapping = THREE.ACESFilmicToneMapping;
+        renderers[viewerId].toneMappingExposure = 2.0;
+        container.appendChild(renderers[viewerId].domElement);
+
+        // Controls
+        controls[viewerId] = new THREE.OrbitControls(cameras[viewerId], renderers[viewerId].domElement);
+        controls[viewerId].enableDamping = true;
+        controls[viewerId].dampingFactor = 0.25;
+        controls[viewerId].enableZoom = true;
+        controls[viewerId].target.set(0, 0, 0);
+
+        // Enhanced Lighting Setup
+        // new RGBELoader()
+        //   .setPath('./env/') // HDR 文件路径
+        //   .load('your_env.hdr', function (texture) {
+        //     const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        //     pmremGenerator.compileEquirectangularShader();
+
+        //     const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+
+        //     scene.environment = envMap;   // PBR 材质使用
+        //     scene.background = envMap;    // 设置背景（可选）
+
+        //     texture.dispose();
+        //     pmremGenerator.dispose();
+        //   });
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scenes[viewerId].add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        directionalLight.position.set(5, 5, 5);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        scenes[viewerId].add(directionalLight);
+
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight2.position.set(-5, 5, -5);
+        scenes[viewerId].add(directionalLight2);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1.0);
+        pointLight.position.set(0, 3, 0);
+        scenes[viewerId].add(pointLight);
+
+        isViewerInitialized[viewerId] = true;
+        
+        // Load default model based on viewer ID
+        let modelPath;
+        switch(viewerId) {
+            case 1: modelPath = 'assets/geometry/fankenstein_bedroom_001_input.glb'; break;
+            case 2: modelPath = 'assets/geometry/fankenstein_bedroom_001_ours_lowpoly.glb'; break;
+            case 3: modelPath = 'assets/geometry/fankenstein_bedroom_001_Frankenstein.glb'; break;
+
+            case 4: modelPath = 'assets/geometry/bedroom_0000_input.glb'; break;
+            case 5: modelPath = 'assets/geometry/bedroom_0000_geometry_ours_lowpoly.glb'; break;
+            case 6: modelPath = 'assets/geometry/bedroom_0000_geometry_Frankenstein.glb'; break;
+
+            case 7: modelPath = 'assets/geometry/livingroom_8016_input.glb'; break;
+            case 8: modelPath = 'assets/geometry/livingroom_8016_ours_lowpoly.glb'; break;
+            case 9: modelPath = 'assets/geometry/livingroom_8016_Frankenstein.glb'; break;
+
+            case 10: modelPath = 'assets/geometry/livingroom_8013_input.glb'; break;
+            case 11: modelPath = 'assets/geometry/livingroom_8013_ours_lowpoly.glb'; break;
+            case 12: modelPath = 'assets/geometry/livingroom_8013_Frankenstein.glb'; break;
+        }
+        loadGLBModel(modelPath, viewerId);
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls[viewerId]) controls[viewerId].update();
+            if (renderers[viewerId] && scenes[viewerId] && cameras[viewerId]) {
+                renderers[viewerId].render(scenes[viewerId], cameras[viewerId]);
+            }
+        }
+        animate();
+    }
+
+    function loadGLBModel(modelPath, viewerId = 1) {
+        if (!isViewerInitialized[viewerId]) {
+            initGLBViewer(viewerId);
+            return;
+        }
+
+        // Remove existing model
+        if (models[viewerId]) {
+            scenes[viewerId].remove(models[viewerId]);
+        }
+
+        // Load new model
+        const loader = new THREE.GLTFLoader();
+        loader.load(
+            modelPath,
+            function(gltf) {
+                models[viewerId] = gltf.scene;
+                
+                // Center and scale the model
+                const box = new THREE.Box3().setFromObject(models[viewerId]);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2 / maxDim;
+                models[viewerId].scale.multiplyScalar(scale);
+                
+                models[viewerId].position.sub(center.multiplyScalar(scale));
+                
+                // Fix materials and enable shadows
+                models[viewerId].traverse(function(node) {
+                    if (node.isMesh) {
+                        // Fix material issues
+                        if (node.material) {
+                            if (Array.isArray(node.material)) {
+                                node.material.forEach(mat => {
+                                    if (mat.map) mat.map.encoding = THREE.sRGBEncoding;
+                                    mat.needsUpdate = true;
+                                });
+                            } else {
+                                if (node.material.map) {
+                                    node.material.map.encoding = THREE.sRGBEncoding;
+                                }
+                                // If material is too dark, add some basic lighting
+                                if (!node.material.emissive) {
+                                    node.material.emissive = new THREE.Color(0x111111);
+                                }
+                                node.material.needsUpdate = true;
+                            }
+                        } else {
+                            // Create a basic material if none exists
+                            node.material = new THREE.MeshStandardMaterial({
+                                color: 0xcccccc,
+                                roughness: 0.5,
+                                metalness: 0.1
+                            });
+                        }
+                        
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                    }
+                });
+                
+                scenes[viewerId].add(models[viewerId]);
+                
+                console.log(`GLB model ${viewerId} loaded successfully`);
+                console.log('Model size:', size);
+                console.log('Model center:', center);
+            },
+            function(progress) {
+                console.log(`Loading progress viewer ${viewerId}: `, (progress.loaded / progress.total * 100) + '%');
+            },
+            function(error) {
+                console.error(`Error loading GLB model for viewer ${viewerId}:`, error);
+            }
+        );
+    }
+
+    function onWindowResize() {
+        [1, 2, 3, 4, 5, 6, 7, 8].forEach(viewerId => {
+            if (!isViewerInitialized[viewerId]) return;
+            
+            const container = document.getElementById(`glb-viewer-${viewerId}`);
+            if (!container) return;
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            cameras[viewerId].aspect = width / height;
+            cameras[viewerId].updateProjectionMatrix();
+            renderers[viewerId].setSize(width, height);
+        });
+    }
+
+    function resetCamera(viewerId = 1) {
+        if (
+          !isViewerInitialized[viewerId] || !models[viewerId] ||
+          !isViewerInitialized[viewerId+1] || !models[viewerId+1] ||
+          !isViewerInitialized[viewerId+2] || !models[viewerId+2]
+        ) return;
+        
+        // Calculate appropriate camera distance based on model size
+        const box = new THREE.Box3().setFromObject(models[viewerId]);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const distance = maxDim * 1.;
+        
+        cameras[viewerId].position.set(distance, distance, distance);
+        cameras[viewerId].lookAt(0, 0, 0);
+        controls[viewerId].target.set(0, 0, 0);
+        controls[viewerId].reset();
+
+        cameras[viewerId+1].position.set(distance, distance, distance);
+        cameras[viewerId+1].lookAt(0, 0, 0);
+        controls[viewerId+1].target.set(0, 0, 0);
+        controls[viewerId+1].reset();
+
+        cameras[viewerId+2].position.set(distance, distance, distance);
+        cameras[viewerId+2].lookAt(0, 0, 0);
+        controls[viewerId+2].target.set(0, 0, 0);
+        controls[viewerId+2].reset();
+    }
+
+    function toggleWireframe(viewerId = 1) {
+        if (!models[viewerId+1] || !models[viewerId+2]) return;
+        models[viewerId+1].traverse(function(node) {
+            if (node.isMesh && node.material) {
+                if (Array.isArray(node.material)) {
+                    node.material.forEach(mat => {
+                        mat.wireframe = !mat.wireframe;
+                    });
+                } else {
+                    node.material.wireframe = !node.material.wireframe;
+                }
+            }
+        });
+
+        models[viewerId+2].traverse(function(node) {
+            if (node.isMesh && node.material) {
+                if (Array.isArray(node.material)) {
+                    node.material.forEach(mat => {
+                        mat.wireframe = !mat.wireframe;
+                    });
+                } else {
+                    node.material.wireframe = !node.material.wireframe;
+                }
+            }
+        });
+    }
+
+    function exportScreenshot(viewerId = 1) {
+        if (!renderers[viewerId] || !renderers[viewerId+1] || !renderers[viewerId+2]) return;
+        const link1 = document.createElement('a');
+        link1.download = `layout.png`;
+        link1.href = renderers[viewerId].domElement.toDataURL();
+        link1.click();
+
+        const link2 = document.createElement('a');
+        link2.download = `layout2scene_output_.png`;
+        link2.href = renderers[viewerId+1].domElement.toDataURL();
+        link2.click();
+
+        const link3 = document.createElement('a');
+        link3.download = `Frankenstein_output.png`;
+        link3.href = renderers[viewerId+2].domElement.toDataURL();
+        link3.click();
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', onWindowResize, false);
+  </script>
+
+</head>
+
+<body>
+
+<section class="hero is-large" id="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <!-- Paper title -->
+          <h1 class="title is-1 publication-title">
+              <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 3rem; font-weight: bold;">Layout👉Scene</span>
+              </div>
+              <br>
+              <span style="font-size: 3rem;">
+                Layout Guided Scene Generation via Geometry and Appearance Diffusion Priors
+              </span>
+          </h1>
+
+          <!-- Paper authors -->
+          <div class="is-size-5 publication-authors authors-block">
+            <span class="author-block"><a href="https://minglin-chen.github.io/" target="_blank">Minglin Chen</a></span><sup>1</sup>,
+            <span class="author-block"><a href="https://longguangwang.github.io/" target="_blank">Longguang Wang</a></span><sup>1</sup>,
+            <span class="author-block"><a href="https://scholar.google.com.hk/citations?user=cvS1yuMAAAAJ&hl=zh-CN" target="_blank">Sheng Ao</a></span><sup>2</sup>,
+            <span class="author-block"><a href="#" target="_blank">Ye Zhang</a></span><sup>1</sup>,
+            <span class="author-block"><a href="https://kevinkaixu.net/" target="_blank">Kai Xu</a></span><sup>3</sup>,
+            <span class="author-block"><a href="https://www.yulanguo.cn/" target="_blank">Yulan Guo</a></span><sup>1</sup>
+          </div>
+
+          <!-- Institutions -->
+          <div class="is-size-5 institutions-block">
+            <span class="author-block">
+              <sup>1</sup>Sun Yat-sen University, 
+              <sup>2</sup>Xiamen University,
+              <sup>3</sup>National University of Defense Technology
+            </span>
+          </div>
+
+          <!-- Links -->
+          <div class="column has-text-centered links-block">
+            <div class="publication-links">
+              
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2501.02519" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>arXiv (old version)</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                  <a href="https://github.com/Minglin-Chen/Layout2Scene" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
+                  </a>
+              </span>
+
+              <!-- <span class="link-block">
+              <a href="https://huggingface.co/haoningwu/SceneGen" class="external-link button is-normal is-rounded is-dark">
+                <span>🤗 Hugging Face</span>
+              </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video-->
+<section class="hero is-small is-light">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered" style="margin-top: 3rem;">
+        Introduction
+      </h2>
+      <h2 class="subtitle has-text-centered">
+        <b>TL;DR:</b> Layout2Scene generates 3D scene from human-provided <b>layout</b> and <b>text</b> prompts.
+      </h2>
+
+      <!-- Video here -->
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/JRG4wC8o6Dk?autoplay=1&mute=1&loop=1&playlist=JRG4wC8o6Dk"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </iframe>
+      </div>
+
+      <!-- <video poster="" id="tree" autoplay controls muted loop height="100%">
+        <source src="assets/videos/teaser.mp4" type="video/mp4">
+      </video> -->
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<!-- <section class="hero is-small is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            3D scene generation conditioned on text prompts has significantly progressed due to the development of 2D diffusion generation models.
+            However, the textual description of 3D scenes is inherently inaccurate and lacks fine-grained control during training, leading to implausible scene generation.
+            As an intuitive and feasible solution, the 3D layout allows for precise specification of object locations within the scene.
+            To this end, we present a text-to-scene generation method (namely, Layout2Scene) using additional semantic layout as the prompt to inject precise control of 3D object positions.
+            Specifically, we first introduce a scene hybrid representation to decouple objects and backgrounds, which is initialized via a pre-trained text-to-3D model. Then, we propose a two-stage scheme to optimize the geometry and appearance of the initialized scene separately. 
+            To fully leverage 2D diffusion priors in geometry and appearance generation, we introduce a semantic-guided geometry diffusion model and a semantic-geometry guided diffusion model which are finetuned on a scene dataset.
+            Extensive experiments demonstrate that our method can generate more plausible and realistic scenes as compared to state-of-the-art approaches. Furthermore, the generated scene allows for flexible yet precise editing, thereby facilitating multiple downstream applications. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- End paper abstract -->
+
+<!-- Methodology -->
+<section class="hero is_small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Methodology</h2>
+          <img src="assets/images/pipeline.jpg" alt="Methodology Overview">
+          <p style="text-align: left;">
+            Our method generates scene meshes and textures from user-specified scene layouts and style prompts through a two-stage framework: 
+            (1) <b>Layout-guided geometry generation</b>: We adopt a hybrid scene representation where objects and background are modeled using 3D Gaussians and polygons, respectively. The representation is optimized with a layout-guided geometry diffusion model and an object-level geometry diffusion model. The final scene mesh is extracted from the optimized hybrid scene representation.
+            (2) <b>Layout-guided appearance generation</b>: Given the generated scene mesh, we employ an object-aware neural texture to represent textures for all objects and the background. This representation is optimized via a layout-guided appearance diffusion model and an object-level appearance diffusion model. The optimized neural texture is then converted into high-quality texture maps for each object and background through a texture sampling process.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End methodology -->
+
+<!-- Interactive demo -->
+<section class="hero is-small" id="demo-geometry">
+  <div class="container is-max-desktop">
+    <div class="rows is-centered has-text-centered">
+      <div class="rows is-centered">
+        <div class="row is-full-width">
+          <h2 class="title is-3"><span class="dvima">Interactive Results on Geometry Generation</span></h2>
+        </div>
+      </div>
+    </div>
+    <br>
+  </div>
+
+  <!-- 3D Model Viewer Section -->
+  <div class="model-viewer-row">
+    <!-- 1st Demo Group -->
+    <div class="model-viewer-container">
+      <div class="content-panels">
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Input 3D Layout</div>
+          <div id="glb-viewer-1"></div>
+        </div>
+
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Output (Ours)</div>
+          <div id="glb-viewer-2"></div>
+        </div>
+
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Output (Frankenstein)</div>
+          <div id="glb-viewer-3"></div>
+        </div>
+      </div>
+
+      <!-- <div class="viewer-controls">
+        <button style="font-size:0.8rem" onclick="resetCamera(1)">🔄 Reset View</button>
+        <button style="font-size:0.8rem" onclick="toggleWireframe(1)">🔲 Wireframe</button>
+        <button style="font-size:0.8rem" onclick="exportScreenshot(1)">📷 Screenshot</button>
+      </div> -->
+    </div>
+
+    <!-- 2nd Demo Group -->
+    <div class="model-viewer-container">
+      <div class="content-panels">
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Input 3D Layout</div>
+          <div id="glb-viewer-4"></div>
+        </div>
+
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Output (Ours)</div>
+          <div id="glb-viewer-5"></div>
+        </div>
+
+        <div class="model-panel">
+          <div class="panel-title" style="font-size: 1rem;">Output (Frankenstein)</div>
+          <div id="glb-viewer-6"></div>
+        </div>
+      </div>
+
+      <!-- <div class="viewer-controls">
+        <button style="font-size:0.8rem" onclick="resetCamera(4)">🔄 Reset View</button>
+        <button style="font-size:0.8rem" onclick="toggleWireframe(4)">🔲 Wireframe</button>
+        <button style="font-size:0.8rem" onclick="exportScreenshot(4)">📷 Screenshot</button>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- Second Row of 3D Model Viewer Section -->
+  <div class="model-viewer-row">
+    <!-- 3rd Demo Group -->
+    <div class="model-viewer-container">
+      <div class="content-panels">
+        <div class="model-panel">
+          <div id="glb-viewer-7"></div>
+        </div>
+
+        <div class="model-panel">
+          <div id="glb-viewer-8"></div>
+        </div>
+
+        <div class="model-panel">
+          <div id="glb-viewer-9"></div>
+        </div>
+      </div>
+
+      <!-- <div class="viewer-controls">
+        <button style="font-size:0.8rem" onclick="resetCamera(7)">🔄 Reset View</button>
+        <button style="font-size:0.8rem" onclick="toggleWireframe(7)">🔲 Wireframe</button>
+        <button style="font-size:0.8rem" onclick="exportScreenshot(7)">📷 Screenshot</button>
+      </div> -->
+    </div>
+
+    <!-- 4th Demo Group -->
+    <div class="model-viewer-container">
+      <div class="content-panels">
+        <div class="model-panel">
+          <div id="glb-viewer-10"></div>
+        </div>
+
+        <div class="model-panel">
+          <div id="glb-viewer-11"></div>
+        </div>
+
+        <div class="model-panel">
+          <div id="glb-viewer-12"></div>
+        </div>
+      </div>
+
+      <!-- <div class="viewer-controls">
+        <button style="font-size:0.8rem" onclick="resetCamera(10)">🔄 Reset View</button>
+        <button style="font-size:0.8rem" onclick="toggleWireframe(10)">🔲 Wireframe</button>
+        <button style="font-size:0.8rem" onclick="exportScreenshot(10)">📷 Screenshot</button>
+      </div> -->
+    </div>
+  </div>
+
+  <script>
+    // Initialize the 3D viewers when the demo section is visible
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              // Initialize all viewers
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].forEach(viewerId => {
+                if (!isViewerInitialized[viewerId]) {
+                  initGLBViewer(viewerId);
+                }
+              });
+            }, 200); // Small delay to ensure the containers are properly sized
+          }
+        });
+      });
+      
+      const demoSection = document.getElementById('demo-geometry');
+      if (demoSection) {
+        observer.observe(demoSection);
+      }
+    });
+  </script>
+</section>
+<!-- End interactive demo -->
+
+<!-- Comparisons -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <h2 class="title is-3">Comparisons on 3D Scene Generation</h2>
+      
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/s8i0NRoDums?autoplay=1&mute=1&loop=1&playlist=s8i0NRoDums"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </iframe>
+      </div>
+
+      <!-- <video poster="" id="tree" autoplay muted loop height="100%">
+        <source src="assets/videos/appearance_comparison_video.mp4" type="video/mp4">
+      </video> -->
+    </div>
+  </div>
+</section>
+<!-- End Comparisons -->
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <h2 class="title is-3">Style Customization</h2>
+
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/52PpocbgS3A?autoplay=1&mute=1&loop=1&playlist=52PpocbgS3A"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </iframe>
+      </div>
+
+      <!-- <video poster="" id="tree" autoplay muted loop height="100%">
+        <source src="assets/videos/styl_customization.mp4" type="video/mp4">
+      </video> -->
+    </div>
+  </div>
+</section>
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <h2 class="title is-3">More</h2>
+      <p style="text-align: left;">
+        We provide the Blender Addon for easy 3D layout design, while the generated scenes can be directly imported into Blender for further editing.
+      </p>
+
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/e2DD_puG01M?autoplay=1&mute=1&loop=1&playlist=e2DD_puG01M"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </iframe>
+      </div>
+
+      <!-- <video poster="" id="tree" autoplay muted loop height="100%">
+        <source src="assets/videos/blender_addon.mp4" type="video/mp4">
+      </video> -->
+    </div>
+  </div>
+</section>
+
+<!-- <section class="section hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <h2 class="title is-3">Blender Addon</h2>
+
+      <video poster="" id="tree" autoplay muted loop height="100%">
+        <source src="assets/videos/blender_addon.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section> -->
+
+<!--BibTex citation -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    If you find our approach helpful, you may consider citing our work.
+    <pre><code>
+      @article{chen2025layout2scene,
+      title={Layout2Scene: 3D semantic layout guided scene generation via geometry and appearance diffusion priors},
+      author={Chen, Minglin and Wang, Longguang and Ao, Sheng and Zhang, Ye and Xu, Kai and Guo, Yulan},
+      journal={arXiv preprint arXiv:2501.02519},
+      year={2025}}
+    </code></pre>
+  </div>
+</section>
+<!--End BibTex citation -->
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-10 has-text-centered">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            <br>This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+</body>
+</html>
